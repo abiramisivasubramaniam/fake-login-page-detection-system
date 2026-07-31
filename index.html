@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Fake Login Page Detector</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #0a0e1a;
+            color: white;
+            text-align: center;
+            padding: 50px;
+        }
+        h1 {
+            color: #00c9b1;
+            font-size: 36px;
+        }
+        input[type="text"] {
+            width: 60%;
+            padding: 15px;
+            font-size: 16px;
+            border-radius: 8px;
+            border: 2px solid #00c9b1;
+            background: #111827;
+            color: white;
+            margin: 20px 0;
+        }
+        button {
+            padding: 15px 40px;
+            font-size: 18px;
+            background: #00c9b1;
+            color: black;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        .result {
+            margin-top: 30px;
+            padding: 20px;
+            border-radius: 10px;
+            font-size: 24px;
+            font-weight: bold;
+        }
+        .reasons {
+            margin-top: 20px;
+            text-align: left;
+            display: inline-block;
+            font-size: 16px;
+        }
+   .threat-report {
+    margin-top: 30px;
+    background: #111827;
+    border: 2px solid #00c9b1;
+    border-radius: 10px;
+    padding: 20px;
+    text-align: left;
+    display: inline-block;
+}
+.threat-report h3 {
+    color: #00c9b1;
+    text-align: center;
+    margin-bottom: 15px;
+}
+.threat-report table {
+    width: 100%;
+    border-collapse: collapse;
+}
+.threat-report th, .threat-report td {
+    padding: 10px;
+    border-bottom: 1px solid #333;
+    text-align: left;
+}
+.threat-report th {
+    color: #00c9b1;
+    width: 40%;
+}
+ </style>
+</head>
+<body>
+    <h1>🔒 Fake Login Page Detection System</h1>
+    <p>Enter a URL to check if it is a phishing page</p>
+    <form method="POST" action="/">
+        <input type="text" name="url"
+            placeholder="Enter URL here e.g. http://example.com/login"
+            value="{{ url or '' }}">
+        <br>
+        <button type="submit">🔍 Check URL</button>
+        <br><br>
+
+      
+    </form>
+
+
+    {% if result %}
+    <div class="result" style="background: {{ 'rgba(255,0,0,0.2)' if color=='red' else 'rgba(0,255,0,0.2)' }}; border: 2px solid {{ color }};">
+        {{ '⚠️ PHISHING DETECTED!' if result=='PHISHING' else '✅ LEGITIMATE PAGE' }}
+        <br>
+        <span style="font-size:18px">Risk Score: {{ score }}/100</span>
+    </div>
+
+    {% if reasons %}
+    <div class="reasons">
+        <h3 style="color:#00c9b1">Reasons Detected:</h3>
+        {% for reason in reasons %}
+        <p>⚠️ {{ reason }}</p>
+        {% endfor %}
+    </div>
+    {% endif %}
+    {% endif %}
+{% if threat_report %}
+<div class="threat-report">
+    <h3>Threat Intelligence Report</h3>
+
+    <table>
+        <tr>
+           <th>Status</th>
+           <td>{{ threat_report.status }}</td>
+        </tr>
+        <tr>
+            <th>Domain</th>
+            <td>{{ threat_report.domain }}</td>
+        </tr>
+        <tr>
+            <th>Owner</th>
+            <td>{{ threat_report.owner }}</td>
+        </tr>
+        <tr>
+            <th>Created Date</th>
+            <td>{{ threat_report.created_date }}</td>
+        </tr>
+        <tr>
+            <th>Expiry Date</th>
+            <td>{{ threat_report.expiry_date }}</td>
+        </tr>
+        <tr>
+            <th>IP Address</th>
+            <td>{{ threat_report.ip_address }}</td>
+        </tr>
+        <tr>
+            <th>Country</th>
+            <td>{{ threat_report.country }}</td>
+        </tr>
+        <tr>
+            <th>City</th>
+            <td>{{ threat_report.city }}</td>
+        </tr>
+        <tr>
+            <th>ISP</th>
+            <td>{{ threat_report.isp }}</td>
+        </tr>
+    </table>
+</div>
+{% endif %}
+<hr style="margin:60px 0; border:1px solid #00c9b1;">
+
+<h2 style="color:#00c9b1;">📋 Bulk URL Scanner</h2>
+
+<form method="POST" action="/bulk_scan">
+    <textarea
+        name="bulk_urls"
+        rows="10"
+        cols="80"
+        placeholder="Enter one URL per line">
+    </textarea>
+
+    <br><br>
+
+    <button type="submit">Scan URLs</button>
+</form>
+{% if bulk_results %}
+<h2 style="color:#00c9b1;">Bulk Scan Results</h2>
+
+<table border="1" cellpadding="10" style="margin:auto; border-collapse:collapse; color:white;">
+    <tr>
+        <th>URL</th>
+        <th>Result</th>
+        <th>Risk Score</th>
+    </tr>
+
+    {% for item in bulk_results %}
+    <tr>
+        <td>{{ item.url }}</td>
+        <td>{{ item.result }}</td>
+        <td>{{ item.score }}/100</td>
+    </tr>
+    {% endfor %}
+</table>
+{% endif %}
+</body>
+</html>

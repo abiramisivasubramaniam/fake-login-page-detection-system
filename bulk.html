@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Bulk URL Scanner</title>
+</head>
+<body>
+
+<h1>Bulk URL Scanner</h1>
+
+<form method="POST" action="/bulk_scan">
+    <textarea name="bulk_urls" rows="10" cols="80"
+    placeholder="Enter one URL per line"></textarea>
+
+    <br><br>
+
+    <button type="submit">Scan URLs</button>
+</form>
+{% if bulk_results %}
+<h2>Results</h2>
+
+<table border="1" cellpadding="10">
+    <tr>
+        <th>URL</th>
+        <th>Result</th>
+        <th>Risk Score</th>
+    </tr>
+
+    {% for item in bulk_results %}
+    <tr>
+        <td>{{ item.url }}</td>
+        <td>{{ item.result }}</td>
+        <td>{{ item.score }}/100</td>
+    </tr>
+    {% endfor %}
+</table>
+{% endif %}
+
+</body>
+</html>
